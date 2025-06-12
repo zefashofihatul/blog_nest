@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #111827;
+        --secondary: #374151;
+        --tertiary: #6b7280;
+        --accent: #4f46e5;
+        --accent-hover: #4338ca;
+        --card-bg: #ffffff;
+        --tag-bg: #e5e7eb;
+        --default-image: #f3f4f6;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f9fafb;
+        color: var(--primary);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+      }
+
+      /* Top Navigation Bar */
+      .top-bar {
+        background-color: white;
+        box-shadow: var(--shadow-sm);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        padding: 1rem 0;
+      }
+
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+      }
+
+      .logo {
+        font-family: "Poppins", sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        letter-spacing: -0.5px;
+      }
+
+      .logo span {
+        color: var(--accent);
+      }
+
+      .nav-menu {
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      .nav-item {
+        position: relative;
+        padding: 0.5rem 0;
+        color: var(--secondary);
+        font-weight: 500;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .nav-item:hover {
+        color: var(--accent);
+      }
+
+      .nav-item.active {
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .nav-item.active::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: var(--accent);
+        border-radius: 2px;
+      }
+
+      .user-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: var(--transition);
+        border: none;
+        background-color: var(--accent);
+        color: white;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .btn:hover {
+        background-color: var(--accent-hover);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .btn:active {
+        transform: translateY(0);
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+      }
+
+      .btn-outline:hover {
+        background-color: rgba(79, 70, 229, 0.1);
+      }
+
+      /* Main Layout */
+      .dashboard-container {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        gap: 2rem;
+        padding: 2rem 0;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        position: sticky;
+        top: 80px;
+        height: calc(100vh - 100px);
+        overflow-y: auto;
+        padding-right: 0.5rem;
+      }
+
+      .sidebar-section {
+        margin-bottom: 2rem;
+      }
+
+      .sidebar-title {
+        font-family: "Poppins", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--primary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .sidebar-title i {
+        font-size: 1rem;
+        color: var(--tertiary);
+      }
+
+      .sidebar-list {
+        list-style: none;
+      }
+
+      .sidebar-list li {
+        padding: 0.65rem 0.75rem;
+        color: var(--secondary);
+        font-size: 0.95rem;
+        cursor: pointer;
+        border-radius: 8px;
+        margin-bottom: 0.25rem;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .sidebar-list li i {
+        font-size: 0.9rem;
+        width: 20px;
+        color: var(--tertiary);
+      }
+
+      .sidebar-list li:hover {
+        background-color: rgba(79, 70, 229, 0.05);
+        color: var(--accent);
+      }
+
+      .sidebar-list li:hover i {
+        color: var(--accent);
+      }
+
+      .sidebar-list li.active {
+        background-color: rgba(79, 70, 229, 0.1);
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .sidebar-list li.active i {
+        color: var(--accent);
+      }
+
+      /* Main Content */
+      .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .content-section {
+        background-color: white;
+        border-radius: 16px;
+        padding: 1.75rem;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .section-title {
+        font-family: "Poppins", sans-serif;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      .filter-controls {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .filter-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        background-color: white;
+        color: var(--secondary);
+      }
+
+      .filter-btn:hover {
+        background-color: #f3f4f6;
+      }
+
+      .filter-btn.active {
+        background-color: var(--accent);
+        color: white;
+        border-color: var(--accent);
+      }
+
+      /* Blog Grid */
+      .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .blog-card {
+        background-color: var(--card-bg);
+        border-radius: 14px;
+        overflow: hidden;
+        transition: var(--transition);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .blog-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        border-color: rgba(0, 0, 0, 0.1);
+      }
+
+      .card-image {
+        width: 100%;
+        height: 160px;
+        background-color: var(--default-image);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+
+      .blog-card:hover .card-image img {
+        transform: scale(1.05);
+      }
+
+      .default-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 2rem;
+        color: var(--tertiary);
+        opacity: 0.2;
+      }
+
+      .card-content {
+        padding: 1.5rem;
+      }
+
+      .card-badge {
+        display: inline-block;
+        padding: 0.35rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .badge-design {
+        background-color: #e0e7ff;
+        color: #4338ca;
+      }
+
+      .badge-development {
+        background-color: #d1fae5;
+        color: #065f46;
+      }
+
+      .badge-marketing {
+        background-color: #fef3c7;
+        color: #92400e;
+      }
+
+      .badge-content {
+        background-color: #ede9fe;
+        color: #5b21b6;
+      }
+
+      .badge-technology {
+        background-color: #e0f2fe;
+        color: #0369a1;
+      }
+
+      .badge-other {
+        background-color: #e5e7eb;
+        color: #4b5563;
+      }
+
+      .card-title {
+        font-family: "Poppins", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        line-height: 1.4;
+      }
+
+      .card-excerpt {
+        color: var(--secondary);
+        font-size: 0.9rem;
+        margin-bottom: 1.25rem;
+        line-height: 1.6;
+      }
+
+      .card-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--tertiary);
+        font-size: 0.8rem;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .card-stats {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 3rem 0;
+        color: var(--tertiary);
+      }
+
+      .loading-spinner {
+        border: 3px solid rgba(79, 70, 229, 0.1);
+        border-radius: 50%;
+        border-top: 3px solid var(--accent);
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Status Badges */
+      .status-badge {
+        display: inline-block;
+        padding: 0.35rem 0.85rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+
+      .status-in-progress {
+        background-color: #e0f2fe;
+        color: #0369a1;
+      }
+
+      .status-on-hold {
+        background-color: #fee2e2;
+        color: #b91c1c;
+      }
+
+      .status-completed {
+        background-color: #dcfce7;
+        color: #166534;
+      }
+
+      .status-popular {
+        background-color: #fef3c7;
+        color: #92400e;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 1024px) {
+        .dashboard-container {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          position: static;
+          height: auto;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .blog-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .section-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+
+        .filter-controls {
+          flex-wrap: wrap;
+        }
+
+        .nav-menu {
+          display: none;
+        }
+      }
+
+      .category-tag {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background-color: #e0e7ff;
+        color: #4338ca;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .category-tag:hover {
+        background-color: #c7d2fe;
+        transform: translateY(-1px);
+      }
+
+      .categories-container {
+        margin-bottom: 0.75rem;
+        min-height: 2rem;
+      }
+
+      .status-published {
+        background-color: #dcfce7;
+        color: #166534;
+      }
+
+      .status-draft {
+        background-color: #e0f2fe;
+        color: #0369a1;
+      }
+
+      .status-archived {
+        background-color: #fee2e2;
+        color: #b91c1c;
+      }
+
+      .status-scheduled {
+        background-color: #fef3c7;
+        color: #92400e;
+      }
+
+      /* Card Actions */
+      .card-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+
+      .btn-edit,
+      .btn-delete {
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+
+      .btn-edit {
+        background-color: #e0f2fe;
+        color: #0369a1;
+        border: 1px solid #bae6fd;
+      }
+
+      .btn-edit:hover {
+        background-color: #bae6fd;
+      }
+
+      .btn-delete {
+        background-color: #fee2e2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+      }
+
+      .btn-delete:hover {
+        background-color: #fecaca;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top Navigation Bar -->
+    <div class="top-bar">
+      <div class="nav-container">
+        <div class="logo">Blog<span>Nest</span></div>
+
+        <div class="nav-menu">
+          <div class="nav-item active">Dashboard</div>
+          <div class="nav-item">Content</div>
+          <div class="nav-item">Analytics</div>
+          <div class="nav-item">Team</div>
+          <div class="nav-item">Settings</div>
+        </div>
+
+        <div class="user-actions">
+          <button class="btn" id="newArticleBtn">
+            <i class="fas fa-plus"></i> New Blog
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <div class="sidebar-section">
+            <h3 class="sidebar-title">
+              <i class="fas fa-th-large"></i> Categories
+            </h3>
+            <ul class="sidebar-list" id="categoryList">
+              <li class="active" data-category="all">
+                <i class="fas fa-star"></i> All Categories
+              </li>
+              <li data-category="design">
+                <i class="fas fa-paint-brush"></i> Design
+              </li>
+              <li data-category="development">
+                <i class="fas fa-code"></i> Development
+              </li>
+              <li data-category="marketing">
+                <i class="fas fa-bullhorn"></i> Marketing
+              </li>
+              <li data-category="content">
+                <i class="fas fa-pen-fancy"></i> Content
+              </li>
+              <li data-category="technology">
+                <i class="fas fa-cogs"></i> Technology
+              </li>
+            </ul>
+          </div>
+
+          <div class="sidebar-section">
+            <h3 class="sidebar-title">
+              <i class="fas fa-fire"></i> Trending Tags
+            </h3>
+            <ul class="sidebar-list">
+              <li><i class="fas fa-hashtag"></i> UI/UX</li>
+              <li><i class="fas fa-hashtag"></i> JavaScript</li>
+              <li><i class="fas fa-hashtag"></i> React</li>
+              <li><i class="fas fa-hashtag"></i> SEO</li>
+              <li><i class="fas fa-hashtag"></i> AI</li>
+            </ul>
+          </div>
+
+          <div class="sidebar-section">
+            <h3 class="sidebar-title">
+              <i class="fas fa-calendar-alt"></i> Schedule
+            </h3>
+            <ul class="sidebar-list">
+              <li><i class="fas fa-clock"></i> Upcoming</li>
+              <li><i class="fas fa-check-circle"></i> Published</li>
+              <li><i class="fas fa-archive"></i> Archived</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+          <div class="content-section">
+            <div class="section-header">
+              <h3 class="section-title">Blog Posts</h3>
+              <div class="filter-controls">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="published">
+                  <i class="fas fa-check-circle"></i> Published
+                </button>
+                <button class="filter-btn" data-filter="draft">
+                  <i class="fas fa-edit"></i> Draft
+                </button>
+                <button class="filter-btn" data-filter="archived">
+                  <i class="fas fa-archive"></i> Archived
+                </button>
+              </div>
+            </div>
+            <div class="blog-grid" id="contentList">
+              <div class="empty-state">
+                <div class="loading-spinner"></div>
+                <p>Loading your articles...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Global variables
+      let allPosts = [];
+      let allCategories = [];
+
+      // Fetch categories
+      async function fetchCategories() {
+        try {
+          const response = await fetch("php/get_categories.php");
+          const data = await response.json();
+
+          if (data.success && data.data) {
+            allCategories = data.data;
+            populateCategoryList();
+          }
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+        }
+      }
+
+      // Populate category sidebar list
+      function populateCategoryList() {
+        const categoryList = document.getElementById("categoryList");
+
+        // Clear existing items except the first one ("All Categories")
+        while (categoryList.children.length > 1) {
+          categoryList.removeChild(categoryList.lastChild);
+        }
+
+        // Add new category items
+        allCategories.forEach((category) => {
+          const li = document.createElement("li");
+          li.dataset.category = category.slug;
+          li.innerHTML = `<i class="fas fa-tag"></i> ${category.name}`;
+          li.addEventListener("click", () => filterByCategory(category.slug));
+          categoryList.appendChild(li);
+        });
+      }
+
+      // Fungsi untuk filter kategori
+      function filterByCategory(categorySlug) {
+        // Update active state di sidebar
+        document.querySelectorAll("#categoryList li").forEach((li) => {
+          li.classList.toggle("active", li.dataset.category === categorySlug);
+        });
+
+        // Filter posts
+        let filteredPosts =
+          categorySlug === "all"
+            ? allPosts
+            : allPosts.filter((post) =>
+                post.categories.some((cat) => cat.slug === categorySlug)
+              );
+
+        renderBlogPosts(filteredPosts);
+      }
+
+      // Inisialisasi event listener untuk kategori
+      document.querySelectorAll("#categoryList li").forEach((li) => {
+        li.addEventListener("click", function () {
+          const categorySlug = this.dataset.category;
+          filterByCategory(categorySlug);
+        });
+      });
+
+      // Updated render function with status
+      function renderBlogPosts(posts) {
+        const contentList = document.getElementById("contentList");
+
+        if (!posts || posts.length === 0) {
+          showEmptyState("No articles found matching your filters");
+          return;
+        }
+
+        contentList.innerHTML = posts
+          .map(
+            (post) => `
+<div class="blog-card">
+  <div class="card-image">
+    ${
+      post.featured_image
+        ? `<img src="${post.featured_image}" alt="${post.title}">`
+        : `<div class="default-icon"><i class="fas fa-pen-fancy"></i></div>`
+    }
+  </div>
+  
+  <div class="card-content">
+    <div style="display: flex; justify-content: start; align-items: flex-start;">
+      <div class="categories-container">
+        ${
+          post.categories && post.categories.length > 0
+            ? post.categories
+                .map(
+                  (cat) =>
+                    `<span class="category-tag" data-slug="${cat.slug}">${cat.name}</span>`
+                )
+                .join("")
+            : '<span class="category-tag">UNCATEGORIZED</span>'
+        }
+        <span class="status-badge status-${post.status
+          .toLowerCase()
+          .replace(" ", "-")}">
+          ${post.status.toUpperCase()}
+        </span>
+      </div>
+    </div>
+    <h3 class="card-title">${post.title || "Untitled Post"}</h3>
+    <p class="card-excerpt">${post.excerpt || "No excerpt available"}</p>
+
+            <div class="card-meta">
+      <div>
+        ${calculateReadingTime(post.word_count || 0)}
+        ${
+          post.created_at
+            ? `<span style="margin-left: 1rem;"><i class="far fa-calendar-alt"></i> ${formatDate(
+                post.created_at
+              )}</span>`
+            : ""
+        }
+      </div>
+    </div>
+    <div class="card-actions">
+      <button class="btn-edit" data-id="${post.id}">
+        <i class="fas fa-edit"></i> Edit
+      </button>
+      <button class="btn-delete" data-id="${post.id}">
+        <i class="fas fa-trash-alt"></i> Delete
+      </button>
+    </div>
+  </div>
+</div>
+`
+          )
+          .join("");
+
+        // Add event listeners for edit and delete buttons
+        document.querySelectorAll(".btn-edit").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const postId = e.currentTarget.dataset.id;
+            editArticle(postId);
+          });
+        });
+
+        document.querySelectorAll(".btn-delete").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const postId = e.currentTarget.dataset.id;
+            deleteArticle(postId);
+          });
+        });
+
+        function editArticle(id) {
+          window.location.href = `editor.html?id=${id}`;
+        }
+
+        function deleteArticle(id) {
+          if (
+            confirm(
+              "Are you sure you want to delete this article? This action cannot be undone."
+            )
+          ) {
+            fetch(`php/delete_content.php?id=${id}`, {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+              .then((response) => {
+                if (!response.ok) throw new Error("Delete failed");
+                return response.json();
+              })
+              .then((data) => {
+                if (data.success) {
+                  window.location.reload();
+                } else {
+                  alert(data.message || "Failed to delete article");
+                }
+              })
+              .catch((error) => {
+                alert("Error deleting article. Please try again.");
+                console.error("Delete error:", error);
+              });
+          }
+        }
+        // Add click event to category tags
+        document.querySelectorAll(".category-tag").forEach((tag) => {
+          tag.addEventListener("click", (e) => {
+            filterByCategory(e.target.dataset.slug);
+          });
+        });
+      }
+
+      // Helper functions
+      function calculateReadingTime(wordCount) {
+        const wordsPerMinute = 200;
+        const minutes = Math.ceil(wordCount / wordsPerMinute);
+        return `${minutes} min read`;
+      }
+
+      function formatDate(dateString) {
+        const options = { year: "numeric", month: "short", day: "numeric" };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+      }
+
+      function showEmptyState(message) {
+        const contentList = document.getElementById("contentList");
+        contentList.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-book-open" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+        <p>${message}</p>
+      </div>
+    `;
+      }
+
+      // Initialize the page
+      async function init() {
+        await fetchCategories();
+
+        // Fetch posts
+        fetch("php/get_contents.php")
+          .then((response) => {
+            if (!response.ok) throw new Error("Network error");
+            return response.json();
+          })
+          .then((data) => {
+            if (data.success && data.data) {
+              allPosts = data.data;
+              renderBlogPosts(allPosts);
+
+              // Set up filter event listeners
+              document.querySelectorAll(".filter-btn").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                  const filter = btn.dataset.filter;
+                  filterByStatus(filter);
+                });
+              });
+            } else {
+              showEmptyState("No articles available");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            showEmptyState("Error loading articles. Please try again.");
+          });
+      }
+
+      // Fungsi untuk filter status
+      function filterByStatus(status) {
+        // Update active state di filter buttons
+        document.querySelectorAll(".filter-btn").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.filter === status);
+        });
+
+        // Filter posts
+        let filteredPosts =
+          status === "all"
+            ? allPosts
+            : allPosts.filter((post) => post.status === status);
+
+        renderBlogPosts(filteredPosts);
+      }
+
+      // Inisialisasi event listener untuk filter status
+      document.querySelectorAll(".filter-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const status = this.dataset.filter;
+          filterByStatus(status);
+        });
+      });
+
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>

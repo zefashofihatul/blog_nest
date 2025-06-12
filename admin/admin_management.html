@@ -1,0 +1,216 @@
+<div class="content-section">
+  <div class="section-header">
+    <h3 class="section-title">Admin Management</h3>
+    <button id="add-admin-btn" class="btn btn-sm">
+      <i class="fas fa-plus"></i> Add Admin
+    </button>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="admins-table">
+      <!-- Data akan diisi via JavaScript -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal untuk Add/Edit Admin -->
+<div id="admin-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 id="modal-title">Add New Admin</h4>
+      <span class="close">&times;</span>
+    </div>
+    <div class="modal-body">
+      <form id="admin-form">
+        <input type="hidden" id="user-id" />
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required />
+        </div>
+        <div class="form-group">
+          <label for="role">Role</label>
+          <select id="role" required>
+            <option value="admin">Admin</option>
+            <option value="author">Author</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline cancel-btn">
+            Cancel
+          </button>
+          <button type="submit" class="btn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Fungsi untuk memuat daftar admin
+  async function loadAdmins() {
+    try {
+      const response = await fetch("/api/users.php?role=admin");
+      const data = await response.json();
+
+      if (data.success) {
+        renderAdmins(data.data);
+      } else {
+        showError(data.error);
+      }
+    } catch (error) {
+      showError(error.message);
+    }
+  }
+
+  function renderAdmins(admins) {
+    const table = document.getElementById("admins-table");
+    table.innerHTML = admins
+      .map(
+        (admin) => `
+        <tr>
+            <td>${admin.id}</td>
+            <td>${admin.username}</td>
+            <td>${admin.email}</td>
+            <td><span class="badge ${
+              admin.role === "admin" ? "badge-primary" : "badge-info"
+            }">${admin.role}</span></td>
+            <td><span class="badge ${
+              admin.status === "active" ? "badge-success" : "badge-warning"
+            }">${admin.status}</span></td>
+            <td>
+                <button class="action-btn edit" data-id="${admin.id}">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="action-btn delete" data-id="${admin.id}">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </td>
+        </tr>
+    `
+      )
+      .join("");
+
+    // Tambahkan event listeners
+    document.querySelectorAll(".action-btn.edit").forEach((btn) => {
+      btn.addEventListener("click", () => editAdmin(btn.dataset.id));
+    });
+
+    document.querySelectorAll(".action-btn.delete").forEach((btn) => {
+      btn.addEventListener("click", () => deleteAdmin(btn.dataset.id));
+    });
+  }
+
+  // Fungsi untuk menambah/mengedit admin
+  async function saveAdmin() {
+    const formData = {
+      username: document.getElementById("username").value,
+      email: document.getElementById("email").value,
+      password: document.getElementById("password").value,
+      role: document.getElementById("role").value,
+      full_name: document.getElementById("username").value, // Default sama dengan username
+    };
+
+    const userId = document.getElementById("user-id").value;
+    const method = userId ? "PUT" : "POST";
+    const url = userId ? `/api/users.php?id=${userId}` : "/api/users.php";
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        closeModal();
+        loadAdmins(); // Refresh list
+      } else {
+        showError(data.error);
+      }
+    } catch (error) {
+      showError(error.message);
+    }
+  }
+
+  async function loadAuthors() {
+    const response = await fetch("users.php?role=author");
+    const data = await response.json();
+
+    if (data.success) {
+      renderAuthors(data.data);
+    }
+  }
+
+  function renderAuthors(authors) {
+    const table = document.getElementById("authors-table");
+    table.innerHTML = authors
+      .map(
+        (author) => `
+            <tr>
+                <td>${author.id}</td>
+                <td>
+                    <div class="user-cell">
+                        <div class="avatar">${author.full_name.charAt(0)}</div>
+                        <div>${author.full_name}</div>
+                    </div>
+                </td>
+                <td>${author.article_count || 0}</td>
+                <td>
+                    <span class="badge ${
+                      author.status === "active" ? "success" : "warning"
+                    }">
+                        ${author.status}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn-icon edit" data-id="${author.id}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon delete" data-id="${author.id}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `
+      )
+      .join("");
+  }
+
+  // Panggil fungsi loadAdmins saat halaman dimuat
+  document.addEventListener("DOMContentLoaded", () => {
+    loadAdmins();
+
+    // Setup modal
+    document.getElementById("add-admin-btn").addEventListener("click", () => {
+      document.getElementById("modal-title").textContent = "Add New Admin";
+      document.getElementById("admin-form").reset();
+      document.getElementById("user-id").value = "";
+      openModal();
+    });
+
+    document.getElementById("admin-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      saveAdmin();
+    });
+  });
+</script>

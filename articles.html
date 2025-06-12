@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog Articles - BlogNest</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #1e293b;
+        --secondary: #475569;
+        --accent: #7c3aed;
+        --accent-hover: #6d28d9;
+        --card-bg: #ffffff;
+        --body-bg: #f1f5f9;
+        --border-radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--body-bg);
+        color: var(--primary);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--primary);
+      }
+
+      .header p {
+        color: var(--secondary);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .articles-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      .article-card {
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .article-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .article-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+
+      .article-content {
+        padding: 1.5rem;
+      }
+
+      .article-categories {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .category-tag {
+        background-color: #e9d5ff;
+        color: #7e22ce;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+
+      .article-title {
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+        color: var(--primary);
+      }
+
+      .article-excerpt {
+        color: var(--secondary);
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .article-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.85rem;
+        color: var(--secondary);
+      }
+
+      .read-more {
+        display: inline-block;
+        margin-top: 1rem;
+        color: var(--accent);
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .read-more:hover {
+        color: var(--accent-hover);
+      }
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 3rem;
+      }
+
+      .page-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        background: white;
+        border: 1px solid #e2e8f0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .page-btn:hover {
+        background: #f1f5f9;
+      }
+
+      .page-btn.active {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+      }
+
+      @media (max-width: 768px) {
+        .articles-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Latest Articles</h1>
+        <p>
+          Discover insightful articles on various topics written by our talented
+          authors
+        </p>
+      </div>
+
+      <div class="articles-grid" id="articlesContainer">
+        <!-- Articles will be loaded here -->
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i> Loading articles...
+        </div>
+      </div>
+
+      <div class="pagination" id="pagination">
+        <!-- Pagination will be loaded here -->
+      </div>
+    </div>
+
+    <script>
+      let currentPage = 1;
+      const articlesPerPage = 9;
+
+      async function fetchArticles(page = 1) {
+        try {
+          const response = await fetch(
+            `php/get_public_articles.php?page=${page}&per_page=${articlesPerPage}`
+          );
+          const data = await response.json();
+
+          if (data.success && data.data.length > 0) {
+            renderArticles(data.data);
+            renderPagination(data.meta);
+          } else {
+            showEmptyState();
+          }
+        } catch (error) {
+          console.error("Error fetching articles:", error);
+          showErrorState();
+        }
+      }
+
+      function renderArticles(articles) {
+        const container = document.getElementById("articlesContainer");
+        container.innerHTML = "";
+
+        if (articles.length === 0) {
+          showEmptyState();
+          return;
+        }
+
+        articles.forEach((article) => {
+          const articleCard = document.createElement("div");
+          articleCard.className = "article-card";
+          articleCard.innerHTML = `
+                    <a href="read.html?id=${article.id}">
+                        <img src="${
+                          article.featured_image || "images/default-article.jpg"
+                        }" alt="${article.title}" class="article-image">
+                    </a>
+                    <div class="article-content">
+                        <div class="article-categories">
+                            ${article.categories
+                              .map(
+                                (cat) =>
+                                  `<span class="category-tag">${cat.name}</span>`
+                              )
+                              .join("")}
+                        </div>
+                        <h3 class="article-title">
+                            <a href="read.html?id=${article.id}">${
+            article.title
+          }</a>
+                        </h3>
+                        <p class="article-excerpt">${
+                          article.excerpt || "No excerpt available"
+                        }</p>
+                        <div class="article-meta">
+                            <span>${formatDate(article.created_at)}</span>
+                            <span>${calculateReadingTime(
+                              article.word_count || 0
+                            )}</span>
+                        </div>
+                        <a href="read.html?id=${
+                          article.id
+                        }" class="read-more">Read More →</a>
+                    </div>
+                `;
+          container.appendChild(articleCard);
+        });
+      }
+
+      function renderPagination(meta) {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+
+        const totalPages = meta.total_pages;
+        if (totalPages <= 1) return;
+
+        // Previous button
+        const prevBtn = document.createElement("button");
+        prevBtn.className = "page-btn";
+        prevBtn.innerHTML = "← Previous";
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.addEventListener("click", () => {
+          if (currentPage > 1) {
+            currentPage--;
+            fetchArticles(currentPage);
+          }
+        });
+        pagination.appendChild(prevBtn);
+
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+          const pageBtn = document.createElement("button");
+          pageBtn.className = `page-btn ${i === currentPage ? "active" : ""}`;
+          pageBtn.textContent = i;
+          pageBtn.addEventListener("click", () => {
+            currentPage = i;
+            fetchArticles(currentPage);
+          });
+          pagination.appendChild(pageBtn);
+        }
+
+        // Next button
+        const nextBtn = document.createElement("button");
+        nextBtn.className = "page-btn";
+        nextBtn.innerHTML = "Next →";
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.addEventListener("click", () => {
+          if (currentPage < totalPages) {
+            currentPage++;
+            fetchArticles(currentPage);
+          }
+        });
+        pagination.appendChild(nextBtn);
+      }
+
+      function showEmptyState() {
+        const container = document.getElementById("articlesContainer");
+        container.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+                    <i class="fas fa-book-open" style="font-size: 3rem; color: #94a3b8; margin-bottom: 1rem;"></i>
+                    <h3>No articles found</h3>
+                    <p>There are no published articles at the moment.</p>
+                </div>
+            `;
+      }
+
+      function showErrorState() {
+        const container = document.getElementById("articlesContainer");
+        container.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ef4444; margin-bottom: 1rem;"></i>
+                    <h3>Error loading articles</h3>
+                    <p>Please try again later.</p>
+                    <button onclick="fetchArticles()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        Retry
+                    </button>
+                </div>
+            `;
+      }
+
+      function formatDate(dateString) {
+        const options = { year: "numeric", month: "short", day: "numeric" };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+      }
+
+      function calculateReadingTime(wordCount) {
+        const wordsPerMinute = 200;
+        const minutes = Math.ceil(wordCount / wordsPerMinute);
+        return `${minutes} min read`;
+      }
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", () => {
+        fetchArticles();
+      });
+    </script>
+  </body>
+</html>

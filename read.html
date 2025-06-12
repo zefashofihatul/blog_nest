@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Article - Medium Style</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=MediumContentTitleFont:wght@700&family=MediumContentSansRoman&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        /* Dashboard color scheme */
+        --primary: #1e293b;
+        --secondary: #475569;
+        --tertiary: #94a3b8;
+        --accent: #7c3aed;
+        --accent-hover: #6d28d9;
+        --accent-light: #c7d2fe;
+        --card-bg: #ffffff;
+        --sidebar-bg: #f8fafc;
+        --body-bg: #f1f5f9;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --gradient-accent: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --border-radius: 12px;
+        --card-border: 1px solid rgba(0, 0, 0, 0.03);
+
+        /* Article color scheme */
+        --primary-text: rgba(0, 0, 0, 0.84);
+        --secondary-text: rgba(0, 0, 0, 0.54);
+        --light-gray: rgba(0, 0, 0, 0.05);
+        --highlight: #1a8917;
+        --font-sans: "MediumContentSansRoman", -apple-system, BlinkMacSystemFont,
+          sans-serif;
+        --font-title: "MediumContentTitleFont", Georgia, serif;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* Top Navigation Bar */
+      .top-bar {
+        background-color: white;
+        box-shadow: var(--shadow-sm);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+      }
+
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+      }
+
+      .logo {
+        font-family: "Poppins", sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        letter-spacing: -0.5px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .logo-icon {
+        background: var(--gradient-accent);
+        color: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .logo span {
+        background: var(--gradient-accent);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .nav-menu {
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      .nav-item {
+        position: relative;
+        padding: 0.5rem 0;
+        color: var(--secondary);
+        font-weight: 500;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .nav-item:hover {
+        color: var(--accent);
+      }
+
+      .nav-item.active {
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .nav-item.active::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--gradient-accent);
+        border-radius: 2px;
+      }
+
+      .user-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: var(--transition);
+        border: none;
+        background: var(--gradient-accent);
+        color: white;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .btn:hover {
+        background: linear-gradient(
+          135deg,
+          var(--accent-hover) 0%,
+          #9333ea 100%
+        );
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-accent);
+      }
+
+      .btn:active {
+        transform: translateY(0);
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+      }
+
+      .btn-outline:hover {
+        background-color: rgba(124, 58, 237, 0.1);
+      }
+
+      body {
+        font-family: var(--font-sans);
+        color: var(--primary);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .article-container {
+        max-width: 740px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      .article-header {
+        margin-bottom: 40px;
+      }
+
+      .article-title {
+        font-family: var(--font-title);
+        font-weight: 700;
+        font-size: 42px;
+        line-height: 1.15;
+        margin-bottom: 20px;
+      }
+
+      .article-meta {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .author-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        margin-right: 12px;
+        object-fit: cover;
+      }
+
+      .author-info {
+        flex: 1;
+      }
+
+      .author-name {
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .article-date {
+        color: var(--secondary-text);
+        font-size: 14px;
+      }
+
+      .article-cover {
+        width: 100%;
+        max-height: 400px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-bottom: 40px;
+      }
+
+      .article-content {
+        font-size: 20px;
+        line-height: 1.7;
+      }
+
+      .article-content p {
+        margin-bottom: 28px;
+      }
+
+      .article-content h2 {
+        font-family: var(--font-title);
+        font-size: 28px;
+        margin: 45px 0 20px;
+        line-height: 1.3;
+      }
+
+      .article-content h3 {
+        font-family: var(--font-title);
+        font-size: 22px;
+        margin: 35px 0 15px;
+        line-height: 1.3;
+      }
+
+      .article-content blockquote {
+        border-left: 3px solid var(--light-gray);
+        padding-left: 20px;
+        margin: 30px 0;
+        color: var(--secondary-text);
+        font-style: italic;
+      }
+
+      .article-content img {
+        max-width: 100%;
+        height: auto;
+        margin: 30px auto;
+        display: block;
+      }
+
+      .article-content ul,
+      .article-content ol {
+        margin: 25px 0;
+        padding-left: 30px;
+      }
+
+      .article-content li {
+        margin-bottom: 10px;
+      }
+
+      .article-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 40px 0;
+      }
+
+      .article-tag {
+        background: var(--light-gray);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        color: var(--secondary-text);
+        text-decoration: none;
+      }
+
+      .article-tag:hover {
+        background: #e0e0e0;
+      }
+
+      .article-actions {
+        display: flex;
+        justify-content: center;
+        margin: 60px 0;
+        padding-top: 30px;
+        border-top: 1px solid var(--light-gray);
+      }
+
+      .action-button {
+        background: none;
+        border: none;
+        display: flex;
+        align-items: center;
+        margin: 0 15px;
+        cursor: pointer;
+        color: var(--secondary-text);
+        font-size: 14px;
+      }
+
+      .action-button svg {
+        margin-right: 6px;
+      }
+
+      @media (max-width: 768px) {
+        .article-title {
+          font-size: 32px;
+        }
+
+        .article-content {
+          font-size: 18px;
+        }
+
+        .auth-buttons {
+          gap: 0.5rem;
+        }
+
+        .btn {
+          padding: 0.5rem 1rem;
+          font-size: 0.8rem;
+        }
+      }
+
+      .back-to-home {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: var(--gradient-accent);
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow-md);
+        cursor: pointer;
+        transition: var(--transition);
+        z-index: 99;
+        border: none;
+      }
+
+      .back-to-home:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-lg);
+        background: linear-gradient(
+          135deg,
+          var(--accent-hover) 0%,
+          #9333ea 100%
+        );
+      }
+
+      .back-to-home i {
+        font-size: 1.2rem;
+      }
+
+      @media (max-width: 768px) {
+        .back-to-home {
+          width: 45px;
+          height: 45px;
+          bottom: 20px;
+          right: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button
+      class="back-to-home"
+      onclick="window.location.href='index.html'"
+      title="Back to Home"
+    >
+      <i class="fas fa-home"></i>
+    </button>
+    <!-- Top Navigation Bar -->
+    <div class="top-bar">
+      <div class="nav-container">
+        <div class="logo">
+          <div class="logo-icon">
+            <i class="fas fa-pen-fancy"></i>
+          </div>
+          Blog<span>Nest</span>
+        </div>
+
+        <div class="nav-menu"></div>
+
+        <div class="user-actions">
+          <button class="btn" id="loginBtn">
+            <i class="fa-solid fa-right-to-bracket"></i> Login
+          </button>
+          <button class="btn" id="registerBtn">
+            <i class="fa-solid fa-user-plus"></i> Register
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="article-container">
+      <header class="article-header">
+        <h1 class="article-title" id="article-title"></h1>
+
+        <div class="article-meta">
+          <img alt="Author" id="author-avatar" class="author-avatar" />
+          <div class="author-info">
+            <div class="author-name" id="article-autor">John Doe</div>
+            <div class="article-date" id="article-date"></div>
+          </div>
+        </div>
+
+        <img
+          src=""
+          alt="Article Cover"
+          class="article-cover"
+          id="article-cover"
+        />
+      </header>
+
+      <div class="article-tags" id="article-tags">
+        <!-- Tags will be loaded here -->
+      </div>
+
+      <article class="article-content" id="article-content">
+        <!-- Content will be loaded here -->
+      </article>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const articleId = urlParams.get("id");
+
+        fetch(`php/get_public_content.php?id=${articleId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success && data.data) {
+              const article = data.data;
+              console.log(article);
+              // Set title
+              document.getElementById("article-title").textContent =
+                article.title;
+
+              document.getElementById("article-autor").textContent =
+                article.author.full_name;
+
+              // Set author avatar
+              if (article.author.avatar_url) {
+                document.getElementById("author-avatar").src =
+                  "php/" + article.author.avatar_url;
+              } else {
+                document.getElementById("author-avatar").src =
+                  "https://randomuser.me/api/portraits/men/32.jpg";
+              }
+
+              // Set date
+              const date = new Date(article.created_at);
+              document.getElementById(
+                "article-date"
+              ).textContent = `${date.toLocaleDateString()} · ${Math.ceil(
+                article.content.length / 1000
+              )} min read`;
+
+              // Set cover image
+              if (article.featured_image) {
+                document.getElementById("article-cover").src =
+                  article.featured_image;
+                document.getElementById("article-cover").style.display =
+                  "block";
+              }
+
+              // Set content
+              document.getElementById("article-content").innerHTML =
+                article.content;
+
+              // Load categories
+              fetch(`php/get_content_categories.php?id=${articleId}`)
+                .then((response) => response.json())
+                .then((catData) => {
+                  if (catData.success && catData.data.length > 0) {
+                    const tagsContainer =
+                      document.getElementById("article-tags");
+                    catData.data.forEach((category) => {
+                      const tag = document.createElement("a");
+                      tag.className = "article-tag";
+                      tag.href = `category.php?id=${category.id}`;
+
+                      tag.textContent = category.name;
+                      tagsContainer.appendChild(tag);
+                    });
+                  }
+                });
+            } else {
+              console.error("Error loading article:", data.error);
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+
+        document.getElementById("loginBtn").addEventListener("click", () => {
+          window.location.href = "login.html";
+        });
+
+        document.getElementById("registerBtn").addEventListener("click", () => {
+          window.location.href = "register.html";
+        });
+      });
+    </script>
+  </body>
+</html>

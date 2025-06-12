@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medium-Style Editor</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=MediumContentSansRoman&family=MediumContentTitleFont&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Category Selector Styles */
+      .category-selector {
+        position: relative;
+        margin-right: 15px;
+      }
+
+      .category-toggle {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        background: #f5f5f5;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+
+      .category-toggle:hover {
+        background: #e0e0e0;
+      }
+
+      .category-toggle svg {
+        margin-right: 6px;
+      }
+
+      .category-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 280px;
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        z-index: 100000000000000000000000;
+        display: none;
+        margin-top: 5px;
+      }
+
+      .category-search {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .category-search input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      .category-list {
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .category-item {
+        padding: 10px 15px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        transition: background 0.2s;
+      }
+
+      .category-item:hover {
+        background: #f5f5f5;
+      }
+
+      .category-item input {
+        margin-right: 10px;
+      }
+
+      .category-item.selected {
+        background: #f0f7ff;
+      }
+
+      .category-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 10px;
+      }
+
+      .category-chip {
+        background: #f0f7ff;
+        color: #1a73e8;
+        padding: 4px 8px;
+        border-radius: 16px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+      }
+
+      .category-chip button {
+        background: none;
+        border: none;
+        color: inherit;
+        margin-left: 5px;
+        cursor: pointer;
+        padding: 0;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="editor-header">
+      <div class="cover-upload-btn">
+        <button id="upload-cover-btn">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="margin-right: 6px"
+          >
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          Upload Cover
+        </button>
+        <input
+          type="file"
+          id="cover-upload"
+          accept="image/*"
+          style="display: none"
+        />
+      </div>
+
+      <div class="editor-actions">
+        <button id="save-btn">Save Draft</button>
+        <button id="publish-btn">Publish</button>
+      </div>
+    </header>
+
+    <!-- Modern Ribbon Toolbar -->
+    <div class="editor-ribbon">
+      <button
+        class="back-button"
+        onclick="window.location.href='dashboard.html'"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        Back to Dashboard
+      </button>
+
+      <div class="separator"></div>
+
+      <button onclick="formatText('bold')" title="Bold (Ctrl+B)">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+          <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+        </svg>
+      </button>
+
+      <button onclick="formatText('italic')" title="Italic (Ctrl+I)">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="19" y1="4" x2="10" y2="4"></line>
+          <line x1="14" y1="20" x2="5" y2="20"></line>
+          <line x1="15" y1="4" x2="9" y2="20"></line>
+        </svg>
+      </button>
+
+      <button onclick="formatText('underline')" title="Underline (Ctrl+U)">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"></path>
+          <line x1="4" y1="21" x2="20" y2="21"></line>
+        </svg>
+      </button>
+
+      <div class="separator"></div>
+
+      <button
+        onclick="formatText('createLink', prompt('Enter URL:'))"
+        title="Insert Link"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+          ></path>
+          <path
+            d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+          ></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Editor Element -->
+    <div class="editor-container">
+      <img id="cover-preview" alt="Cover Preview" />
+
+      <div
+        class="category-selector"
+        style="
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 54px;
+        "
+      >
+        <button id="category-toggle" class="category-toggle">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+            ></path>
+            <path d="M3.27 6.96L12 12.01l8.73-5.05"></path>
+            <path d="M12 22.08V12"></path>
+          </svg>
+          Categories
+        </button>
+        <div class="category-dropdown">
+          <div class="category-search">
+            <input
+              type="text"
+              placeholder="Search categories..."
+              id="category-search"
+            />
+          </div>
+          <div class="category-list" id="category-list">
+            <!-- Categories will be loaded here -->
+          </div>
+        </div>
+        <input
+          type="hidden"
+          name="selected_categories"
+          id="selected-categories"
+        />
+      </div>
+
+      <div
+        class="editor-title"
+        contenteditable="true"
+        placeholder="Title"
+      ></div>
+      <div
+        class="editor-content"
+        contenteditable="true"
+        placeholder="Tell your story... (Type '/' for commands)"
+      ></div>
+    </div>
+
+    <!-- Slash Command Menu -->
+    <div class="slash-command-menu">
+      <div class="slash-command-item" data-command="h2">
+        <div class="slash-command-icon">H2</div>
+        <div class="slash-command-text">
+          <div class="slash-command-title">Heading 2</div>
+          <div class="slash-command-desc">Medium section heading</div>
+        </div>
+      </div>
+      <div class="slash-command-item" data-command="h3">
+        <div class="slash-command-icon">H3</div>
+        <div class="slash-command-text">
+          <div class="slash-command-title">Heading 3</div>
+          <div class="slash-command-desc">Small section heading</div>
+        </div>
+      </div>
+      <div class="slash-command-item" data-command="bullet">
+        <div class="slash-command-icon">•</div>
+        <div class="slash-command-text">
+          <div class="slash-command-title">Bulleted list</div>
+          <div class="slash-command-desc">Create a simple bulleted list</div>
+        </div>
+      </div>
+      <div class="slash-command-item" data-command="numbered">
+        <div class="slash-command-icon">1.</div>
+        <div class="slash-command-text">
+          <div class="slash-command-title">Numbered list</div>
+          <div class="slash-command-desc">Create a list with numbering</div>
+        </div>
+      </div>
+      <div class="slash-command-item" data-command="quote">
+        <div class="slash-command-icon">"</div>
+        <div class="slash-command-text">
+          <div class="slash-command-title">Quote</div>
+          <div class="slash-command-desc">Capture a quote</div>
+        </div>
+      </div>
+      <div class="slash-command-item" data-command="divider">
+        <div class="slash-command-icon">―</div>
+        <div class="slash-command-text">
+          <div class="slash-command-title">Divider</div>
+          <div class="slash-command-desc">Visually divide blocks</div>
+        </div>
+      </div>
+      <div class="slash-command-item" data-command="code">
+        <div class="slash-command-icon">{ }</div>
+        <div class="slash-command-text">
+          <div class="slash-command-title">Code</div>
+          <div class="slash-command-desc">Capture a code snippet</div>
+        </div>
+      </div>
+      <div class="slash-command-item" data-command="image">
+        <div class="slash-command-icon">🖼️</div>
+        <div class="slash-command-text">
+          <div class="slash-command-title">Image</div>
+          <div class="slash-command-desc">Upload or embed an image</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Work Count Feature -->
+    <div class="word-count">0 words</div>
+
+    <!-- Image Upload Modal -->
+    <div class="overlay"></div>
+    <div class="image-upload-container">
+      <h3>Insert Image</h3>
+      <input type="file" id="image-upload" accept="image/*" />
+      <div class="button-group">
+        <button id="cancel-upload">Cancel</button>
+        <button id="confirm-upload">Insert</button>
+      </div>
+    </div>
+
+    <!-- Script Javasacript -->
+    <script src="script2.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const contentId = urlParams.get("id");
+
+        // 1. Load semua kategori terlebih dahulu
+        fetch("php/get_categories.php")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              allCategories = data.data;
+
+              // 2. Jika ada contentId, load kategori existing
+              if (contentId) {
+                return fetch(`php/get_content_categories.php?id=${contentId}`)
+                  .then((response) => response.json())
+                  .then((catData) => {
+                    if (catData.success) {
+                      selectedCategories = catData.data.map((c) => c.id);
+                      document.getElementById("selected-categories").value =
+                        selectedCategories.join(",");
+                    }
+                    return loadContentData(contentId); // 3. Load konten
+                  });
+              }
+
+              // Jika tidak ada contentId (buat baru)
+              renderCategories(allCategories);
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      });
+
+      function loadContentData(contentId) {
+        return fetch(`php/get_content.php?id=${contentId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success && data.data) {
+              // Set content
+              document.querySelector(".editor-title").textContent =
+                data.data.title;
+              document.querySelector(".editor-content").innerHTML =
+                data.data.content;
+
+              // Set cover image
+              if (data.data.featured_image) {
+                const preview = document.getElementById("cover-preview");
+                preview.src = data.data.featured_image;
+                preview.style.display = "block";
+              }
+
+              // Render categories dengan existing selection
+              renderCategories(allCategories);
+            }
+          });
+      }
+
+      // Fungsi untuk formatting text
+      function formatText(command, value = null) {
+        document.execCommand(command, false, value);
+        document.querySelector(".editor-content").focus();
+      }
+
+      const categoryToggle = document.getElementById("category-toggle");
+      const categoryDropdown = document.querySelector(".category-dropdown");
+      const categoryList = document.getElementById("category-list");
+      const selectedCategoriesInput = document.getElementById(
+        "selected-categories"
+      );
+      const categorySearch = document.getElementById("category-search");
+
+      let selectedCategories = [];
+      let allCategories = [];
+
+      // Load categories
+      fetch("php/get_categories.php")
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            allCategories = data.data;
+            renderCategories(allCategories);
+
+            // Load existing categories if editing
+            const urlParams = new URLSearchParams(window.location.search);
+            const contentId = urlParams.get("id");
+            if (contentId) {
+              fetch(`php/get_content_categories.php?id=${contentId}`)
+                .then((response) => response.json())
+                .then((data) => {
+                  if (data.success) {
+                    console.log(data);
+                    selectedCategories = data.data.map((c) => c.id);
+                    selectedCategoriesInput.value =
+                      selectedCategories.join(",");
+
+                    updateSelectedCategories();
+                  }
+                });
+            }
+          }
+        });
+
+      // Toggle dropdown
+      categoryToggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        categoryDropdown.style.display =
+          categoryDropdown.style.display === "block" ? "none" : "block";
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", function () {
+        categoryDropdown.style.display = "none";
+      });
+
+      // Search categories
+      categorySearch.addEventListener("input", function () {
+        const searchTerm = this.value.toLowerCase();
+        const filtered = allCategories.filter((cat) =>
+          cat.name.toLowerCase().includes(searchTerm)
+        );
+
+        renderCategories(filtered);
+      });
+
+      function renderCategories(categories) {
+        const categoryList = document.getElementById("category-list");
+        categoryList.innerHTML = "";
+        categories.forEach((category) => {
+          const isSelected = selectedCategories.includes(
+            category.id ? Number(category.id) : category.id
+          );
+          console.log(isSelected);
+
+          const item = document.createElement("div");
+          item.className = `category-item ${isSelected ? "selected" : ""}`;
+          item.innerHTML = `
+            <input type="checkbox" id="cat-${category.id}" 
+                ${isSelected ? "checked" : ""}
+                data-id="${category.id}" 
+                data-name="${category.name}">
+            <label for="cat-${category.id}">${category.name}</label>
+        `;
+          categoryList.appendChild(item);
+
+          const checkbox = item.querySelector("input");
+          checkbox.addEventListener("change", function () {
+            const id = parseInt(this.dataset.id);
+            if (this.checked) {
+              if (!selectedCategories.includes(id)) {
+                selectedCategories.push(id);
+              }
+            } else {
+              selectedCategories = selectedCategories.filter(
+                (catId) => catId !== id
+              );
+            }
+            document.getElementById("selected-categories").value =
+              selectedCategories.join(",");
+            updateSelectedCategories();
+          });
+        });
+
+        // Pastikan chip kategori terupdate
+        updateSelectedCategories();
+      }
+
+      function updateSelectedCategories() {
+        const chipsContainer =
+          document.querySelector(".category-chips") ||
+          document.createElement("div");
+        chipsContainer.className = "category-chips";
+
+        // Pastikan container ada di DOM
+        if (!document.querySelector(".category-chips")) {
+          const categorySelector = document.querySelector(".category-selector");
+          if (categorySelector) {
+            categorySelector.insertBefore(
+              chipsContainer,
+              document.getElementById("category-toggle").nextSibling
+            );
+          }
+        }
+
+        chipsContainer.innerHTML = "";
+
+        // Pastikan allCategories sudah terload
+        if (allCategories.length === 0) return;
+        selectedCategories.forEach((id) => {
+          const category = allCategories.find((c) => c.id == id);
+          if (category) {
+            const chip = document.createElement("div");
+            chip.className = "category-chip";
+            chip.innerHTML = `
+                ${category.name}
+                <button type="button" data-id="${id}">×</button>
+            `;
+            chipsContainer.appendChild(chip);
+
+            // Remove category
+            chip
+              .querySelector("button")
+              .addEventListener("click", function (e) {
+                e.stopPropagation();
+                selectedCategories = selectedCategories.filter(
+                  (catId) => catId !== id
+                );
+                selectedCategoriesInput.value = selectedCategories.join(",");
+                updateSelectedCategories();
+
+                // Uncheck in dropdown
+                const checkbox = document.querySelector(`#cat-${id}`);
+                if (checkbox) checkbox.checked = false;
+              });
+          }
+        });
+      }
+
+      // Tambahkan event listener untuk shortcut keyboard
+      document
+        .querySelector(".editor-content")
+        .addEventListener("keydown", function (e) {
+          // Bold - Ctrl+B
+          if (e.ctrlKey && e.key === "b") {
+            e.preventDefault();
+            formatText("bold");
+          }
+          // Italic - Ctrl+I
+          if (e.ctrlKey && e.key === "i") {
+            e.preventDefault();
+            formatText("italic");
+          }
+          // Underline - Ctrl+U
+          if (e.ctrlKey && e.key === "u") {
+            e.preventDefault();
+            formatText("underline");
+          }
+        });
+
+      // Update toolbar state berdasarkan selection
+      document.addEventListener("selectionchange", function () {
+        const selection = window.getSelection();
+        if (selection.rangeCount === 0) return;
+
+        // Update button states
+        document.querySelectorAll(".editor-ribbon button").forEach((btn) => {
+          const cmd = btn
+            .getAttribute("onclick")
+            ?.match(/formatText\('([^']+)'/)?.[1];
+          if (cmd) {
+            btn.style.backgroundColor = document.queryCommandState(cmd)
+              ? "#d4d4d4"
+              : "";
+          }
+        });
+
+        // Update select value for block format
+        const blockTag = document.queryCommandValue("formatBlock");
+        const formatSelect = document.querySelector(".editor-ribbon select");
+        if (formatSelect) {
+          formatSelect.value = blockTag;
+        }
+      });
+
+      // Handle cover upload
+      document
+        .getElementById("upload-cover-btn")
+        .addEventListener("click", function () {
+          document.getElementById("cover-upload").click();
+        });
+
+      document
+        .getElementById("cover-upload")
+        .addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          // Validasi ukuran file
+          if (file.size > 5 * 1024 * 1024) {
+            // 5MB
+            alert("Ukuran file terlalu besar. Maksimal 5MB");
+            return;
+          }
+
+          // Tampilkan preview
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            const preview = document.getElementById("cover-preview");
+            preview.src = event.target.result;
+            preview.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        });
+
+      async function saveContent(publish = false) {
+        console.log("Saving content...");
+        const title = document
+          .querySelector(".editor-title")
+          .textContent.trim();
+        const content = document.querySelector(".editor-content").innerHTML;
+        const wordCount =
+          content.trim() === "" ? 0 : content.trim().split(/\s+/).length;
+        const coverFile = document.getElementById("cover-upload").files[0];
+        const selectedCategories = document.getElementById(
+          "selected-categories"
+        ).value;
+        const formData = new FormData();
+        formData.append("categories", selectedCategories);
+        formData.append("title", title);
+        formData.append("content", content);
+        formData.append("wordCount", wordCount);
+        formData.append("publish", publish ? "1" : "0");
+
+        if (coverFile) {
+          formData.append("cover_image", coverFile);
+        }
+
+        // Jika editing existing content
+        const urlParams = new URLSearchParams(window.location.search);
+        const contentId = urlParams.get("id");
+        if (contentId) {
+          formData.append("id", contentId);
+        }
+
+        try {
+          const response = await fetch("php/save_content.php", {
+            method: "POST",
+            body: formData,
+          });
+
+          // Handle non-JSON responses
+          const contentType = response.headers.get("content-type");
+          if (!contentType || !contentType.includes("application/json")) {
+            const text = await response.text();
+            throw new Error(text || "Invalid server response");
+          }
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            throw new Error(result.message || "Failed to save content");
+          }
+
+          alert(
+            publish
+              ? "Content published successfully!"
+              : "Draft saved successfully!"
+          );
+
+          if (!contentId && result.content_id) {
+            window.history.pushState(null, null, `?id=${result.content_id}`);
+          }
+
+          if (publish) {
+            window.location.href = "dashboard.html"; // Redirect after publish
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Error: " + error.message);
+          throw error; // Re-throw untuk handling tambahan jika perlu
+        }
+      }
+
+      // Event listeners untuk tombol save dan publish
+      document
+        .getElementById("save-btn")
+        .addEventListener("click", () => saveContent(false));
+
+      document
+        .getElementById("publish-btn")
+        .addEventListener("click", () => saveContent(true));
+
+      // Handle back button
+      document.getElementById("back-btn")?.addEventListener("click", () => {
+        window.location.href = "dashboard.html";
+      });
+
+      // Load content if ID exists in URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const contentId = urlParams.get("id");
+      let currentCoverPath = null;
+
+      if (contentId) {
+        fetch(`php/get_content.php?id=${contentId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success && data.data) {
+              // Set title and content
+              document.querySelector(".editor-title").textContent =
+                data.data.title;
+              document.querySelector(".editor-content").innerHTML =
+                data.data.content;
+
+              // Set cover image if exists
+              if (data.data.featured_image) {
+                currentCoverPath = data.data.featured_image;
+                const preview = document.getElementById("cover-preview");
+                preview.src = data.data.featured_image;
+                preview.style.display = "block";
+              }
+
+              // Update word count
+              const wordCount =
+                document.querySelector(".editor-content").textContent.trim() ===
+                ""
+                  ? 0
+                  : document
+                      .querySelector(".editor-content")
+                      .textContent.trim()
+                      .split(/\s+/).length;
+              document.querySelector(
+                ".word-count"
+              ).textContent = `${wordCount} words`;
+            }
+          })
+          .catch((error) => {
+            console.error("Error loading content:", error);
+          });
+      }
+
+      // Update word count in real-time
+      document
+        .querySelector(".editor-content")
+        .addEventListener("input", function () {
+          const wordCount =
+            this.textContent.trim() === ""
+              ? 0
+              : this.textContent.trim().split(/\s+/).length;
+          document.querySelector(
+            ".word-count"
+          ).textContent = `${wordCount} words`;
+        });
+
+      // Fungsi upload gambar yang diperbaiki
+      async function uploadContentImage(file) {
+        const formData = new FormData();
+        formData.append("content_image", file);
+
+        try {
+          const response = await fetch("php/upload_content_image.php", {
+            method: "POST",
+            // Jangan tambahkan Content-Type header, biarkan browser set otomatis
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          return await response.json();
+        } catch (error) {
+          console.error("Upload error:", error);
+          return {
+            success: false,
+            message: error.message || "Upload failed",
+          };
+        }
+      }
+
+      // Event listener untuk paste dan drop
+      const editor = document.querySelector(".editor-content");
+
+      editor.addEventListener("paste", async (e) => {
+        const items = e.clipboardData.items;
+
+        for (const item of items) {
+          if (item.type.indexOf("image") !== -1) {
+            e.preventDefault();
+            const blob = item.getAsFile();
+
+            // Tampilkan placeholder sementara
+            const placeholder = document.createElement("div");
+            placeholder.innerHTML = "<em>Uploading image...</em>";
+
+            const selection = window.getSelection();
+            if (selection.rangeCount) {
+              const range = selection.getRangeAt(0);
+              range.insertNode(placeholder);
+
+              // Upload gambar
+              const result = await uploadContentImage(blob);
+
+              // Ganti placeholder dengan gambar
+              if (result.success) {
+                const img = document.createElement("img");
+                img.src = result.url;
+                img.style.maxWidth = "100%";
+                img.alt = "Uploaded content image";
+
+                placeholder.replaceWith(img);
+
+                // Tambahkan paragraf baru setelah gambar
+                const p = document.createElement("p");
+                p.innerHTML = "<br>";
+                img.after(p);
+              } else {
+                placeholder.innerHTML = `<em style="color:red">${result.message}</em>`;
+              }
+            }
+            break;
+          }
+        }
+      });
+
+      // Handle drop event
+      editor.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        editor.style.backgroundColor = "#f5f5f5";
+      });
+
+      editor.addEventListener("dragleave", () => {
+        editor.style.backgroundColor = "";
+      });
+
+      editor.addEventListener("drop", async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        editor.style.backgroundColor = "";
+
+        const files = e.dataTransfer.files;
+
+        for (let file of files) {
+          if (file.type.match("image.*")) {
+            const placeholder = document.createElement("div");
+            placeholder.innerHTML = "<em>Uploading image...</em>";
+
+            // Masukkan placeholder di posisi drop
+            const range = document.caretRangeFromPoint(e.clientX, e.clientY);
+            if (range) {
+              range.insertNode(placeholder);
+
+              // Upload gambar
+              const result = await uploadContentImage(file);
+
+              // Ganti placeholder dengan gambar
+              if (result.success) {
+                const img = document.createElement("img");
+                img.src = result.url;
+                img.style.maxWidth = "100%";
+                img.alt = "Uploaded content image";
+
+                placeholder.replaceWith(img);
+
+                // Tambahkan paragraf baru setelah gambar
+                const p = document.createElement("p");
+                p.innerHTML = "<br>";
+                img.after(p);
+              } else {
+                placeholder.innerHTML = `<em style="color:red">${result.message}</em>`;
+              }
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

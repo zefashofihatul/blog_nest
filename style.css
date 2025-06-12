@@ -1,0 +1,518 @@
+/* Reset dan Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "MediumContentSansRoman", Georgia, serif;
+  background-color: #fff;
+  color: rgba(0, 0, 0, 0.84);
+  line-height: 1.58;
+  letter-spacing: -0.003em;
+  padding: 0;
+  margin: 0;
+}
+
+/* Header Styles */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 5%;
+}
+
+.editor-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.editor-actions button {
+  background: transparent;
+  color: rgba(0, 0, 0, 0.54);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.editor-actions button:hover {
+  color: rgba(0, 0, 0, 0.84);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.editor-actions #publish-btn {
+  background: #1a8917;
+  color: white;
+}
+
+.editor-actions #publish-btn:hover {
+  background: #156d12;
+}
+
+/* Editor Container */
+.editor-container {
+  max-width: 740px;
+
+  margin: 0 auto;
+  margin-bottom: 800px;
+  padding: 80px 20px 40px;
+}
+
+/* Title Styles */
+.editor-title {
+  font-family: "MediumContentTitleFont", Georgia, serif;
+  font-size: 42px;
+  outline: none;
+  border: none;
+  width: 100%;
+  background: transparent;
+  color: rgba(0, 0, 0, 0.84);
+  line-height: 1.15;
+  caret-color: rgba(0, 0, 0, 0.84);
+  padding: 0;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.editor-title[placeholder]:empty:before {
+  content: attr(placeholder);
+  color: rgba(0, 0, 0, 0.3);
+  cursor: text;
+}
+
+/* Content Styles */
+.editor-content {
+  letter-spacing: -0.003em;
+  outline: none;
+  border: none;
+  background: transparent;
+  width: 100%;
+  min-height: 300px;
+  color: rgba(0, 0, 0, 0.84);
+  padding: 5px 0;
+  caret-color: rgba(0, 0, 0, 0.84);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.editor-content[placeholder]:empty:before {
+  content: attr(placeholder);
+  color: rgba(0, 0, 0, 0.3);
+  cursor: text;
+}
+
+/* Formatting styles */
+.editor-content h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 52px 0 15px 0;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+
+.editor-content h3 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 38px 0 12px 0;
+  line-height: 1.15;
+}
+
+.editor-content blockquote {
+  border-left: 3px solid rgba(0, 0, 0, 0.84);
+  padding-left: 20px;
+  margin: 29px 0;
+  font-style: italic;
+  color: rgba(0, 0, 0, 0.68);
+}
+
+.editor-content ul,
+.editor-content ol {
+  margin: 29px 0;
+  padding-left: 40px;
+}
+
+.editor-content ul li,
+.editor-content ol li {
+  margin-bottom: 10px;
+}
+
+.editor-content img {
+  max-width: 100%;
+  height: auto;
+  margin: 52px 0;
+  border-radius: 4px;
+  display: block;
+}
+
+.editor-content .code-block {
+  background-color: #f7f7f7;
+  padding: 20px;
+  border-radius: 3px;
+  font-family: "Menlo", "Monaco", monospace;
+  font-size: 16px;
+  margin: 29px 0;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.84);
+  overflow-x: auto;
+}
+
+.editor-content .divider {
+  border-bottom: 1px solid #e0e0e0;
+  margin: 52px 0;
+}
+
+/* Slash command menu */
+.slash-command-menu {
+  position: absolute;
+  background: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+  padding: 8px;
+  width: 280px;
+  z-index: 100;
+  display: none;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.slash-command-menu.visible {
+  display: block;
+}
+
+.slash-command-item {
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin: 2px 0;
+}
+
+.slash-command-item:hover {
+  background-color: #f7f7f7;
+}
+
+.slash-command-item.active {
+  background-color: #f0f0f0;
+}
+
+.slash-command-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex-shrink: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.slash-command-text {
+  flex-grow: 1;
+}
+
+.slash-command-title {
+  font-weight: 500;
+  margin-bottom: 2px;
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.slash-command-desc {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* Word count */
+.word-count {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Image upload modal */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.image-upload-container {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  width: 420px;
+}
+
+.image-upload-container.visible {
+  display: block;
+}
+
+.image-upload-container h3 {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.image-upload-container input[type="file"] {
+  margin-bottom: 20px;
+  width: 100%;
+  padding: 10px;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+}
+
+.image-upload-container .button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.image-upload-container button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+#cancel-upload {
+  background: transparent;
+  color: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#cancel-upload:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+#confirm-upload {
+  background: rgba(0, 0, 0, 0.84);
+  color: white;
+}
+
+#confirm-upload:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.overlay.visible {
+  display: block;
+}
+
+/* Focus styles */
+.editor-title:focus,
+.editor-content:focus {
+  outline: none;
+}
+
+/* Placeholder styles */
+[contenteditable][placeholder]:empty:before {
+  content: attr(placeholder);
+  color: rgba(0, 0, 0, 0.3);
+  cursor: text;
+}
+
+/* Style untuk cover upload */
+.featured-image-upload {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+}
+
+.preview-container {
+  margin-top: 10px;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.preview-container img {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 4px;
+}
+
+/* Header Styles */
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background: #fff;
+  border-bottom: 1px solid #e2e2e2;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Cover Upload Button */
+.cover-upload-btn {
+  position: relative;
+  display: inline-block;
+}
+
+.cover-upload-btn input[type="file"] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* Button Styles */
+button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+#save-btn {
+  background: #f5f5f5;
+  color: #333;
+}
+
+#save-btn:hover {
+  background: #e0e0e0;
+}
+
+#publish-btn {
+  background: #1a8917;
+  color: white;
+}
+
+#publish-btn:hover {
+  background: #157813;
+}
+
+#upload-cover-btn {
+  background: #f0f0f0;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#upload-cover-btn:hover {
+  background: #e0e0e0;
+}
+
+/* Cover Image Preview */
+.cover-image-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  text-align: center;
+  position: relative;
+}
+
+#cover-preview {
+  max-width: 100%;
+  max-height: 400px;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: none;
+  margin: 0 auto;
+  margin-bottom: 40px;
+}
+
+#remove-cover {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cover-image-container:hover #remove-cover {
+  opacity: 1;
+}
+
+/* Style untuk ribbon toolbar */
+.editor-ribbon {
+  display: flex;
+  gap: 5px;
+  padding: 10px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.editor-ribbon button {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.editor-ribbon button:hover {
+  background: #e9e9e9;
+}
+
+.editor-ribbon select {
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
