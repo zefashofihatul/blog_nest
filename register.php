@@ -5,7 +5,7 @@ header("Content-Type: application/json");
 $response = ['success' => false, 'error' => null];
 
 // Define allowed roles
-$allowedRoles = ['author', 'reader'];
+$allowedRoles = ['author', 'superadmin'];
 
 try {
     $data = json_decode(file_get_contents("php://input"), true);

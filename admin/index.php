@@ -832,7 +832,7 @@
                                 </div>
                                 <div class="stat-details">
                                     <div class="stat-label">Total Authors</div>
-                                    <div class="stat-value">42</div>
+                                    <div class="stat-value" id="stat-author">42</div>
                                 </div>
                             </div>
                         </div>
@@ -844,7 +844,7 @@
                                 </div>
                                 <div class="stat-details">
                                     <div class="stat-label">Total Articles</div>
-                                    <div class="stat-value">156</div>
+                                    <div class="stat-value" id="stat-article">156</div>
                                 </div>
                             </div>
                         </div>
@@ -1416,6 +1416,23 @@
             window.location.href = `/hybrid-editor/login.html`;
         }
 
+        function fetchDashboardStats() {
+            fetch('dashboard_stats.php')
+                .then(response => response.json())
+                .then(data => {
+
+                    if (data.success) {
+                        document.getElementById('stat-author').textContent = data.data.totalAuthors;
+                        document.getElementById('stat-article').textContent = data.data.totalArticles;
+                    } else {
+                        console.error('Error:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                });
+        }
+
         // Initialize tab switching
         document.addEventListener('DOMContentLoaded', async function() {
             // First Call Function
@@ -1424,6 +1441,7 @@
 
             initializeCharts();
             fetchArticles(1);
+            fetchDashboardStats();
 
             // Add event listener
             document.getElementById('author-form').addEventListener('submit', handleAuthorSubmit);
