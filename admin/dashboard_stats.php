@@ -46,6 +46,17 @@ try {
         throw new Exception("Failed to fetch articles count: " . $conn->error);
     }
 
+    // Query untuk total categories (categories)
+    $query = "SELECT COUNT(*) as total_categories FROM categories";
+    $result = $conn->query($query);
+    if ($result) {
+        $row = $result->fetch_assoc();
+        $stats['totalCategories'] = (int)$row['total_categories'];
+        $result->free();
+    } else {
+        throw new Exception("Failed to fetch categories count: " . $conn->error);
+    }
+
     // Response sukses
     echo json_encode([
         'success' => true,

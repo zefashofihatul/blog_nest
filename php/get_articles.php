@@ -35,13 +35,17 @@ try {
     $baseDataSql = "SELECT 
                     ec.id, ec.title, ec.slug, ec.content, ec.excerpt, 
                     ec.featured_image, ec.status, ec.word_count, ec.author_id,
-                    ec.created_at, ec.updated_at,
+                    ec.created_at, ec.updated_at, p.full_name as author_name,
+                    p.avatar_url as author_avatar,
                     GROUP_CONCAT(c.name SEPARATOR '|') as category_names,
                     GROUP_CONCAT(c.slug SEPARATOR '|') as category_slugs
                 FROM editor_contents ec
                 LEFT JOIN content_categories cc ON ec.id = cc.content_id
                 LEFT JOIN categories c ON cc.category_id = c.id
-                WHERE ec.status = ?";
+                LEFT JOIN users u ON ec.author_id = u.id
+                LEFT JOIN profiles p ON u.id = p.user_id
+                WHERE ec.status = ?
+                ";
 
     // Add search condition if provided
     $searchCondition = "";
@@ -110,11 +114,13 @@ try {
             'status' => $row['status'],
             'word_count' => (int)$row['word_count'],
             'author_id' => (int)$row['author_id'],
+            'author_name' => $row['author_name'],
+            'author_avatar' => 'php/' . $row['author_avatar'],
             'categories' => $categories,
             'created_at' => $row['created_at'],
-            'updated_at' => $row['updated_at']
+            'updated_at' => $row['updated_at'],
         ];
-    }
+    };
 
     $response['success'] = true;
     $response['meta'] = [

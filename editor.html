@@ -740,7 +740,12 @@
           }
 
           if (publish) {
-            window.location.href = "dashboard.html"; // Redirect after publish
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (user.role === "superadmin") {
+              window.location.href = "admin/index.php"; // Redirect after publish
+            } else if (user.role === "author") {
+              window.location.href = "dashboard.html"; // Redirect after publish
+            }
           }
         } catch (error) {
           console.error("Error:", error);

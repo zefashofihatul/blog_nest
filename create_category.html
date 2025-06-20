@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create New Category - Admin Panel</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #1e293b;
+        --accent: #7c3aed;
+        --card-bg: #ffffff;
+        --body-bg: #f1f5f9;
+        --border-radius: 8px;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--body-bg);
+        margin: 0;
+        padding: 2rem;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        font-family: inherit;
+      }
+
+      .btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .btn:hover {
+        background: var(--accent-hover);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <h1>Create New Category</h1>
+        <form id="categoryForm">
+          <div class="form-group">
+            <label for="category_name">Category Name</label>
+            <input
+              type="text"
+              id="category_name"
+              name="category_name"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="category_slug">Slug (URL-friendly)</label>
+            <input
+              type="text"
+              id="category_slug"
+              name="category_slug"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="3"></textarea>
+          </div>
+
+          <button type="submit" class="btn">Create Category</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("categoryForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const formData = {
+            name: document.getElementById("category_name").value,
+            slug: document.getElementById("category_slug").value,
+            description: document.getElementById("description").value,
+          };
+
+          try {
+            const response = await fetch("api/create_category.php", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              alert("Category created successfully!");
+              window.location.href = "categories.php";
+            } else {
+              alert("Error: " + result.message);
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred while creating the category");
+          }
+        });
+
+      // Auto-generate slug from category name
+      document
+        .getElementById("category_name")
+        .addEventListener("input", function () {
+          const name = this.value;
+          const slug = name
+            .toLowerCase()
+            .replace(/[^\w\s-]/g, "") // Remove special chars
+            .replace(/[\s_-]+/g, "-") // Replace spaces and underscores with hyphens
+            .replace(/^-+|-+$/g, ""); // Trim hyphens from start/end
+          document.getElementById("category_slug").value = slug;
+        });
+    </script>
+  </body>
+</html>

@@ -661,6 +661,218 @@
             }
         }
 
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .sidebar {
+                position: static;
+                height: auto;
+                top: auto;
+            }
+
+            .top-bar {
+                position: static;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .logo {
+                font-size: 1.25rem;
+            }
+
+            .user-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .data-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .stat-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .stat-icon {
+                margin-bottom: 0.5rem;
+            }
+
+            .pagination {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .content-section-wrapper {
+                padding: 1rem;
+            }
+
+            .tab-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 0 auto;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .sidebar {
+                padding: 1rem;
+            }
+
+            .sidebar-list li {
+                padding: 0.5rem;
+            }
+        }
+
+        /* Mobile menu toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        @media (max-width: 992px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .sidebar.active {
+                display: block;
+            }
+        }
+
+        /* Responsive Tables */
+        @media (max-width: 768px) {
+            .data-table {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .data-table thead,
+            .data-table tbody,
+            .data-table th,
+            .data-table td,
+            .data-table tr {
+                display: block;
+            }
+
+            .data-table thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            .data-table tr {
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                margin-bottom: 1rem;
+            }
+
+            .data-table td {
+                border: none;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                position: relative;
+                padding-left: 50%;
+                white-space: normal;
+                text-align: left;
+            }
+
+            .data-table td:before {
+                position: absolute;
+                top: 0.75rem;
+                left: 0.75rem;
+                width: 45%;
+                padding-right: 1rem;
+                white-space: nowrap;
+                content: attr(data-title);
+                font-weight: 600;
+                color: var(--secondary);
+            }
+        }
+
+        /* Table responsive adjustments */
+        @media (max-width: 768px) {
+
+            .data-table th,
+            .data-table td {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .user-cell {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .action-btn {
+                width: 100%;
+                height: 28px;
+            }
+        }
+
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -761,10 +973,9 @@
             </div>
 
             <div class="user-actions">
-                <div class="user-profile">
-                    <div class="user-avatar">AD</div>
-                    <span>Admin</span>
-                </div>
+                <button class="btn" id="newArticleBtn">
+                    <i class="fas fa-plus"></i> New Blog
+                </button>
             </div>
         </div>
     </div>
@@ -792,12 +1003,12 @@
 
                 <div class="sidebar-section">
                     <h3 class="sidebar-title">
-                        <i class="fas fa-cog"></i> Settings
+                        <i class="fas fa-tags"></i> Settings
                     </h3>
                     <ul class="sidebar-list">
-                        <li><i class="fas fa-tags"></i> Categories</li>
-                        <li><i class="fas fa-user-shield"></i> Roles</li>
-                        <li><i class="fas fa-sliders-h"></i> System</li>
+                        <li data-tab="categories">
+                            <i class="fas fa-tags"></i> Categories
+                        </li>
                     </ul>
                 </div>
 
@@ -818,6 +1029,7 @@
                     <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
                     <button class="tab-btn" data-tab="authors">Authors</button>
                     <button class="tab-btn" data-tab="articles">Articles</button>
+                    <button class="tab-btn" data-tab="categories">Categories</button>
                 </div>
 
                 <!-- Dashboard Tab Content -->
@@ -849,14 +1061,15 @@
                             </div>
                         </div>
 
+                        <!-- Di bagian stats-grid, ganti card Total Views dengan ini: -->
                         <div class="stat-card">
                             <div class="stat-content">
                                 <div class="stat-icon info">
-                                    <i class="fas fa-eye"></i>
+                                    <i class="fas fa-tags"></i> <!-- Ganti icon dari fa-eye ke fa-tags -->
                                 </div>
                                 <div class="stat-details">
-                                    <div class="stat-label">Total Views</div>
-                                    <div class="stat-value">24,589</div>
+                                    <div class="stat-label">Total Categories</div>
+                                    <div class="stat-value" id="stat-category">0</div> <!-- ID diubah -->
                                 </div>
                             </div>
                         </div>
@@ -886,6 +1099,37 @@
                             <canvas id="articlesChart" height="300"></canvas>
                         </div>
                     </div>
+                </div>
+
+                <div id="categories-tab" class="content-section content-section-wrapper" style="display: none;">
+                    <div class="section-header">
+                        <h3 class="section-title">Categories Management</h3>
+                        <button class="btn" id="add-category-btn">
+                            <i class="fas fa-plus"></i> Add Category
+                        </button>
+                    </div>
+
+                    <table class="data-table" id="categories-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Slug</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categories-table-body">
+                            <!-- Data akan diisi oleh JavaScript -->
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 2rem;">
+                                    <div class="loading-spinner">
+                                        <i class="fas fa-spinner fa-spin"></i> Loading categories...
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- Authors Tab Content -->
@@ -998,6 +1242,36 @@
                         <!-- Pagination will be loaded here -->
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="category-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="category-modal-title">Add New Category</h4>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="category-form">
+                    <input type="hidden" id="category-id">
+                    <div class="form-group">
+                        <label for="category-name">Name</label>
+                        <input type="text" id="category-name" placeholder="Category Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category-slug">Slug</label>
+                        <input type="text" id="category-slug" placeholder="Slug Description" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category-description">Description</label>
+                        <textarea id="category-description" placeholder="Description" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline close-modal">Cancel</button>
+                        <button type="submit" class="btn">Save Category</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -1303,31 +1577,6 @@
             }
         }
 
-
-
-        // Tab Switching Functionality
-        function switchTab(tabId) {
-            // Hide all tab contents
-            document.querySelectorAll('.content-section').forEach(content => {
-                content.style.display = 'none';
-            });
-
-            // Show the selected tab content
-            document.getElementById(tabId + '-tab').style.display = 'block';
-
-            // Update active state of tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
-
-            // Update active state of sidebar items
-            document.querySelectorAll('.sidebar-list li').forEach(item => {
-                item.classList.remove('active');
-            });
-            document.querySelector(`.sidebar-list li[data-tab="${tabId}"]`).classList.add('active');
-        }
-
         document.getElementById("logoutBtnAdmin").addEventListener("click", logout);
 
         function logout() {
@@ -1420,10 +1669,10 @@
             fetch('dashboard_stats.php')
                 .then(response => response.json())
                 .then(data => {
-
                     if (data.success) {
                         document.getElementById('stat-author').textContent = data.data.totalAuthors;
                         document.getElementById('stat-article').textContent = data.data.totalArticles;
+                        document.getElementById('stat-category').textContent = data.data.totalCategories; // Tambah ini
                     } else {
                         console.error('Error:', data.message);
                     }
@@ -1479,6 +1728,280 @@
                         }
                     });
                 }
+            });
+
+            // Fungsi untuk memuat categories
+            async function fetchCategories() {
+                try {
+                    const response = await fetch('get_categories.php');
+                    const data = await response.json();
+
+                    if (data.success) {
+                        renderCategories(data.data);
+                    } else {
+                        console.error('Error loading categories:', data.error);
+                        document.getElementById('categories-table-body').innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--danger);">
+                        Error loading categories: ${data.error}
+                    </td>
+                </tr>
+            `;
+                    }
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                    document.getElementById('categories-table-body').innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center; color: var(--danger);">
+                    Network error: ${error.message}
+                </td>
+            </tr>
+        `;
+                }
+            }
+
+            // Fungsi untuk render categories di tabel
+            function renderCategories(categories) {
+                console.log
+
+                const tbody = document.getElementById('categories-table-body');
+
+                if (categories.length === 0) {
+                    tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center;">
+                    No categories found
+                </td>
+            </tr>
+        `;
+                    return;
+                }
+
+                let html = '';
+                categories.forEach(category => {
+                    html += `
+            <tr>
+                <td>${category.id}</td>
+                <td>${category.name}</td>
+                <td>${category.slug}</td>
+                <td>${category.description || '-'}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="action-btn edit" data-id="${category.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete" data-id="${category.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+                });
+
+                tbody.innerHTML = html;
+            }
+
+            // Modal untuk add/edit category
+            const categoryModal = `
+    <div id="category-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="category-modal-title">Add New Category</h4>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="category-form">
+                    <input type="hidden" id="category-id">
+                    <div class="form-group">
+                        <label for="category-name">Name</label>
+                        <input type="text" id="category-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category-slug">Slug</label>
+                        <input type="text" id="category-slug" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category-description">Description</label>
+                        <textarea id="category-description" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline close-modal">Cancel</button>
+                        <button type="submit" class="btn">Save Category</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+`;
+
+
+            function switchTab(tabId) {
+                // Hide all tab contents
+                document.querySelectorAll('.content-section').forEach(content => {
+                    content.style.display = 'none';
+                });
+
+                // Show the selected tab content
+                document.getElementById(tabId + '-tab').style.display = 'block';
+
+                // Load data based on tab
+                switch (tabId) {
+                    case 'articles':
+                        fetchArticles();
+                        break;
+                    case 'authors':
+                        fetchAuthors();
+                        break;
+                    case 'categories':
+                        fetchCategories(); // Tambahkan ini
+                        break;
+                }
+
+                // Update active state
+                document.querySelectorAll('.tab-btn, .sidebar-list li').forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('data-tab') === tabId) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+
+
+            // Tambahkan modal ke body
+            document.body.insertAdjacentHTML('beforeend', categoryModal);
+
+            // Event listeners
+            // Buka modal tambah kategori
+            document.getElementById('add-category-btn').addEventListener('click', function() {
+                document.getElementById('category-modal-title').textContent = 'Add New Category';
+                document.getElementById('category-form').reset();
+                document.getElementById('category-id').value = '';
+                document.getElementById('category-modal').style.display = 'flex';
+            });
+
+            // Auto-generate slug
+            document.getElementById('category-name').addEventListener('input', function() {
+                const name = this.value;
+                const slug = name.toLowerCase()
+                    .replace(/[^\w\s-]/g, '')
+                    .replace(/[\s_-]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+                document.getElementById('category-slug').value = slug;
+            });
+
+            // Form submission
+            document.getElementById('category-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const categoryData = {
+                    id: document.getElementById('category-id').value || null,
+                    name: document.getElementById('category-name').value,
+                    slug: document.getElementById('category-slug').value,
+                    description: document.getElementById('category-description').value
+                };
+
+                try {
+                    const url = categoryData.id ?
+                        'update_category.php' : 'create_category.php';
+
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(categoryData)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        closeModal();
+                        fetchCategories();
+                    } else {
+                        alert('Error: ' + (data.error || 'Failed to save category'));
+                    }
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            });
+
+            // Event delegation untuk action buttons
+            document.getElementById('categories-table').addEventListener('click', function(e) {
+                // Edit button
+                if (e.target.closest('.action-btn.edit')) {
+                    const categoryId = e.target.closest('.action-btn.edit').dataset.id;
+                    editCategory(categoryId);
+                }
+
+                // Delete button
+                if (e.target.closest('.action-btn.delete')) {
+                    const categoryId = e.target.closest('.action-btn.delete').dataset.id;
+                    deleteCategory(categoryId);
+                }
+            });
+
+            // Fungsi edit category
+            async function editCategory(id) {
+                try {
+                    const response = await fetch(`get_category.php?id=${id}`);
+                    const data = await response.json();
+
+                    if (data.success && data.data) {
+                        document.getElementById('category-modal-title').textContent = 'Edit Category';
+                        document.getElementById('category-id').value = data.data.id;
+                        document.getElementById('category-name').value = data.data.name;
+                        document.getElementById('category-slug').value = data.data.slug;
+                        document.getElementById('category-description').value = data.data.description || '';
+                        document.getElementById('category-modal').style.display = 'flex';
+                    } else {
+                        alert('Category not found');
+                    }
+                } catch (error) {
+                    alert('Error loading category: ' + error.message);
+                }
+            }
+
+            // Fungsi delete category
+            async function deleteCategory(id) {
+                if (!confirm('Are you sure you want to delete this category?')) return;
+
+                try {
+                    const response = await fetch(`delete_category.php?id=${id}`, {
+                        method: 'DELETE'
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        fetchCategories();
+                    } else {
+                        alert(data.message || 'Failed to delete category');
+                    }
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            }
+
+            // Fungsi close modal
+            function closeModal() {
+                document.getElementById('category-modal').style.display = 'none';
+            }
+
+            // Close modal handlers
+            document.querySelectorAll('.close-modal').forEach(el => {
+                el.addEventListener('click', closeModal);
+            });
+
+            document.getElementById('category-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+
+            // New article button
+            document.getElementById("newArticleBtn").addEventListener("click", () => {
+                window.location.href = "/hybrid-editor/editor.html";
             });
 
             // Initialize Charts
